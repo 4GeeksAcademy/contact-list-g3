@@ -1,6 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import rigoImage from "../../img/rigo-baby.jpg";
-import { Context } from '../store/appContext';
 import { UpdateContactModal } from './UpdateContactModal.jsx';
 import { AlertModal } from './AlertModal.jsx';
 
@@ -30,8 +29,8 @@ export const UserDetail = ({ name, address, phone, email, id }) => {
         </div>
       </div>
 
-      <UpdateContactModal id={id} />
-      <AlertModal id={id} />
+      <UpdateContactModal id={id} name={name} />
+      <AlertModal id={id} name={name} />
     </li>
   )
 }

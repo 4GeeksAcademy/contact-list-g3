@@ -1,12 +1,24 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			slug: "fernando_gimeno",
+			agenda: "fernando_gimeno",
+			agendas: [],
 			contacts: [],
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
-			createSlug: (name) => {
+			getAgendas: (limit = 100) => {
+				fetch(`https://playground.4geeks.com/contact/agendas?offset=0&limit=${limit}`)
+					.then((response) => {
+						if (!response.ok) {
+							throw new Error("Ocurrió un error al obtener los datos");
+						}
+						return response.json();
+					})
+					.then((data) => setStore({ agendas: data.agendas }))
+			},
+			setAgenda: (nameAgenda) => setStore({ agenda: nameAgenda }),
+			createAgenda: (name) => {
 				fetch(`https://playground.4geeks.com/contact/agendas/${name}`, {
 					method: "POST",
 				})
@@ -17,11 +29,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then((data) => console.log(data))
 					.catch((error) => console.error(error));
 			},
-			getContacts: (slug) => {
-				fetch(`https://playground.4geeks.com/contact/agendas/${slug}`)
+			getContacts: (nameAgenda) => {
+				fetch(`https://playground.4geeks.com/contact/agendas/${nameAgenda}`)
 					.then((response) => {
 						if (response.status === 404) {
-							getActions().createSlug(slug)
+							getActions().createAgenda(agenda)
 						}
 						return response.json();
 					})
@@ -33,9 +45,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return contacts.find((contact) => contact.id === contactId);
 			},
 			createContact: (contact) => {
-				const { contacts, slug } = getStore();
+				const { contacts, agenda } = getStore();
 
-				fetch(`https://playground.4geeks.com/contact/agendas/${slug}/contacts`, {
+				fetch(`https://playground.4geeks.com/contact/agendas/${agenda}/contacts`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -50,8 +62,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch((error) => console.error(error));
 			},
 			updateContact: (contactId, contact) => {
-				const { contacts, slug } = getStore();
-				fetch(`https://playground.4geeks.com/contact/agendas/${slug}/contacts/${contactId}`, {
+				const { contacts, agenda } = getStore();
+				fetch(`https://playground.4geeks.com/contact/agendas/${agenda}/contacts/${contactId}`, {
 					method: "PUT",
 					headers: {
 						"Content-Type": "application/json",
@@ -59,7 +71,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(contact),
 				})
 					.then((response) => {
-						if (response.status === 404) throw new Error(`La tarea con el id #${contactId} que intentas actualizar no existe en el slug: ${slug}`)
+						if (response.status === 404) throw new Error(`La tarea con el id #${contactId} que intentas actualizar no existe en el slug: ${agenda}`)
 						return response.json()
 					})
 					.then((data) => {
@@ -68,13 +80,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch((error) => console.error(error));
 			},
 			deleteContact: (contactId) => {
-				const { contacts, slug } = getStore();
+				const { contacts, agenda } = getStore();
 
-				fetch(`https://playground.4geeks.com/contact/agendas/${slug}/contacts/${contactId}`, {
+				fetch(`https://playground.4geeks.com/contact/agendas/${agenda}/contacts/${contactId}`, {
 					method: "DELETE",
 				})
 					.then((response) => {
-						if (response.status === 404) throw new Error(`La tarea con el id #${contactId} que intentas eliminar no existe en el slug: ${slug}`)
+						if (response.status === 404) throw new Error(`La tarea con el id #${contactId} que intentas eliminar no existe en el slug: ${agenda}`)
 						if (response.status === 204) {
 							setStore({ contacts: contacts.filter((contact) => contact.id !== contactId) })
 							return
@@ -82,7 +94,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					.catch((error) => console.error(error));
 			},
-			setSlug: (slugName) => setStore({ slug: slugName }),
 		}
 	};
 };
