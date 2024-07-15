@@ -18,7 +18,7 @@ const SelectAgenda = () => {
       <div className="row">
         <div className="col">
           <label htmlFor="agenda" className="form-label">Agenda:</label>
-          <select id="agenda" className="form-select mb-4" aria-label="Default select example" onChange={(e) => actions.setAgenda(e.target.value)}>
+          <select id="agenda" className="form-select mb-4" aria-label="Default select example" defaultValue={store.agenda} onChange={(e) => actions.setAgenda(e.target.value)}>
             {
               store.agendas.length > 0 && (
                 store.agendas.map(agenda => (

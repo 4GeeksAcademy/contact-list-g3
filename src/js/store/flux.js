@@ -1,7 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			agenda: "fernando_gimeno",
+			agenda: "",
 			agendas: [],
 			contacts: [],
 		},
@@ -33,7 +33,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				fetch(`https://playground.4geeks.com/contact/agendas/${nameAgenda}`)
 					.then((response) => {
 						if (response.status === 404) {
-							getActions().createAgenda(agenda)
+							getActions().createAgenda(nameAgenda)
+							getActions().getContacts(nameAgenda)
 						}
 						return response.json();
 					})

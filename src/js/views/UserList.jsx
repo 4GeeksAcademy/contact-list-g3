@@ -13,7 +13,7 @@ export const UserList = () => {
 			<Link to="/add-contact" className="btn btn-success mb-2 w-100">Add new contact</Link>
 			<ul className="list-group">
 				{
-					store.contacts.length > 0 ? (
+					store.contacts && store.contacts.length > 0 ? (
 						store.contacts.map((contact) => (
 							<UserDetail
 								key={contact.id}
